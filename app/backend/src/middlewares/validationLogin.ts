@@ -14,7 +14,7 @@ export default function validationLogin(
       .json({ message: 'All fields must be filled' });
   }
 
-  if (!regexEmail.test(email)) {
+  if (!email || !regexEmail.test(email)) {
     return res.status(400)
       .json({ message: 'All fields must be filled' });
   }
