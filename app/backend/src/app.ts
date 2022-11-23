@@ -25,6 +25,7 @@ class App {
 
     // Rotas /teams:
     this.app.get('/teams', controlesTeam.findAll);
+    this.app.get('/teams/:id', controlesTeam.findOne);
 
     // Middleware of Error
     this.app.use(middlewareError);
