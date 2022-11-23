@@ -1,16 +1,23 @@
 import * as express from 'express';
 import middlewareError from './middlewares/Error';
+import validationLogin from './middlewares/validationLogin';
+import ControllerLogin from './controllers/Login';
 
 class App {
   public app: express.Express;
 
-  constructor() {
+  constructor(
+    private controlesLogin: ControllerLogin = new ControllerLogin(),
+  ) {
     this.app = express();
 
     this.config();
 
     // Não remover essa rota
-    this.app.get('/', (req, res) => res.json({ ok: true }));
+    this.app.get('/', (_req, res) => res.json({ ok: true }));
+
+    // Rota Login
+    this.app.post('/login', validationLogin, controlesLogin.login);
 
     // Middleware of Error
     this.app.use(middlewareError);
