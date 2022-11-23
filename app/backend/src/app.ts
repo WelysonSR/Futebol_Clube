@@ -4,6 +4,7 @@ import validationLogin from './middlewares/validationLogin';
 import ControllerLogin from './controllers/Login';
 import { tokenValidation } from './middlewares/jwt';
 import ControllerTeam from './controllers/Team';
+import ControllerMatches from './controllers/Matches';
 
 class App {
   public app: express.Express;
@@ -11,6 +12,7 @@ class App {
   constructor(
     private controlesLogin: ControllerLogin = new ControllerLogin(),
     private controlesTeam: ControllerTeam = new ControllerTeam(),
+    private controlesMatches: ControllerMatches = new ControllerMatches(),
   ) {
     this.app = express();
 
@@ -19,15 +21,14 @@ class App {
     // Não remover essa rota
     this.app.get('/', (_req, res) => res.json({ ok: true }));
 
-    // Rota Login
     this.app.post('/login', validationLogin, controlesLogin.login);
     this.app.get('/login/validate', tokenValidation, controlesLogin.validateToken);
 
-    // Rotas /teams:
     this.app.get('/teams', controlesTeam.findAll);
     this.app.get('/teams/:id', controlesTeam.findOne);
 
-    // Middleware of Error
+    this.app.get('/matches', controlesMatches.findAll);
+
     this.app.use(middlewareError);
   }
 
