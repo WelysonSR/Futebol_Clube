@@ -3,12 +3,14 @@ import middlewareError from './middlewares/Error';
 import validationLogin from './middlewares/validationLogin';
 import ControllerLogin from './controllers/Login';
 import { tokenValidation } from './middlewares/jwt';
+import ControllerTeam from './controllers/Team';
 
 class App {
   public app: express.Express;
 
   constructor(
     private controlesLogin: ControllerLogin = new ControllerLogin(),
+    private controlesTeam: ControllerTeam = new ControllerTeam(),
   ) {
     this.app = express();
 
@@ -20,6 +22,9 @@ class App {
     // Rota Login
     this.app.post('/login', validationLogin, controlesLogin.login);
     this.app.get('/login/validate', tokenValidation, controlesLogin.validateToken);
+
+    // Rotas /teams:
+    this.app.get('/teams', controlesTeam.findAll);
 
     // Middleware of Error
     this.app.use(middlewareError);
