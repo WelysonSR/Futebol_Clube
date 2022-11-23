@@ -27,12 +27,18 @@ export const tokenValidation = (
   res: Response,
   next: NextFunction,
 ) => {
-  const { authorization } = req.headers;
-
-  jwt.verify(authorization as string, JWT_SECRET, (err) => {
-    if (err) {
-      return res.status(401).json({ message: 'Token must be a valid token' });
+  try {
+    const { authorization } = req.headers;
+    if (!authorization || authorization.length === 0) {
+      return next({ code: 401, message: 'Token not found' });
     }
+    jwt.verify(authorization as string, JWT_SECRET, (err) => {
+      if (err) {
+        return res.status(401).json({ message: 'Token must be a valid token' });
+      }
+    });
     next();
-  });
+  } catch (err) {
+    next(err);
+  }
 };

@@ -2,6 +2,7 @@ import * as express from 'express';
 import middlewareError from './middlewares/Error';
 import validationLogin from './middlewares/validationLogin';
 import ControllerLogin from './controllers/Login';
+import { tokenValidation } from './middlewares/jwt';
 
 class App {
   public app: express.Express;
@@ -18,6 +19,7 @@ class App {
 
     // Rota Login
     this.app.post('/login', validationLogin, controlesLogin.login);
+    this.app.get('/login/validate', tokenValidation, controlesLogin.validateToken);
 
     // Middleware of Error
     this.app.use(middlewareError);
