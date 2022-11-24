@@ -14,4 +14,20 @@ export default class MatchesModel {
     });
     return result;
   }
+
+  async fiuterAll(inProgress: boolean): Promise<IMatches[] | null> {
+    const result = await this._model.findAll({ where: { inProgress } });
+    return result;
+  }
+
+  async create(matches: IMatches): Promise<IMatches> {
+    const result = await this._model.create({
+      homeTeam: matches.homeTeam,
+      homeTeamGoals: matches.homeTeamGoals,
+      awayTeam: matches.awayTeam,
+      awayTeamGoals: matches.awayTeamGoals,
+      inProgress: true,
+    });
+    return result;
+  }
 }
