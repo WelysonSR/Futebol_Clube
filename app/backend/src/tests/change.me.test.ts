@@ -82,7 +82,7 @@ describe('Teste a rota Login Team', () => {
       expect(result.status).to.be.equal(200);  
       expect(result.body).to.be.an('array');
     });  
-  })
+  });
   describe('Rota Get /team error', () => {
     before(async () => {
       sinon
@@ -99,6 +99,28 @@ describe('Teste a rota Login Team', () => {
       console.log(result.status, result.body)
       expect(result.status).to.be.equal(404);
       expect(result.body.message).to.be.equal('No teams found')
+    });  
+  });
+
+  describe('Rota /team/id', () => {
+    const tiam = {
+      id:1,
+      teamName: 'Vitoria',
+    }
+    before(async () => {
+      sinon
+        .stub(TeamModel.prototype, "findOne")
+        .resolves(tiam);
+    });
+
+    after(() => {
+      (TeamModel.prototype.findOne as sinon.SinonStub).restore();
+    });
+
+    it('Retorna um tiam pelo id', async () => {
+      const result = await chai.request(app).get('/teams/1')
+      expect(result.status).to.be.equal(200);  
+      expect(result.body).to.be.an('object');
     });  
   });
 });
