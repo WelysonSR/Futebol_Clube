@@ -6,6 +6,7 @@ export default class MatchesController {
     this.findAll = this.findAll.bind(this);
     this.fiuterAll = this.fiuterAll.bind(this);
     this.create = this.create.bind(this);
+    this.update = this.update.bind(this);
   }
 
   async findAll(
@@ -35,5 +36,15 @@ export default class MatchesController {
   ) {
     const { code, data } = await this.service.create(req.body);
     return res.status(code).json(data);
+  }
+
+  async update(
+    req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) {
+    const { id } = req.params;
+    const { code, data } = await this.service.update(+id);
+    return res.status(code).json({ message: data });
   }
 }

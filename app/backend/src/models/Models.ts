@@ -30,4 +30,12 @@ export default class MatchesModel {
     });
     return result;
   }
+
+  async update(id: number) {
+    const result = await this._model.update(
+      { inProgress: false },
+      { where: { id } },
+    );
+    return result;
+  }
 }
