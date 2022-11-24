@@ -45,4 +45,14 @@ export default class MatchesService {
     }
     return { code: 200, data: 'Finished' };
   }
+
+  async updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+    const matchGoals = await this.model.updateResult(id, homeTeamGoals, awayTeamGoals);
+
+    if (!matchGoals) {
+      return { code: 404, message: 'Unable to update matches in progress' };
+    }
+
+    return { code: 200, data: { homeTeamGoals, awayTeamGoals } };
+  }
 }

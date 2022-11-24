@@ -7,6 +7,7 @@ export default class MatchesController {
     this.fiuterAll = this.fiuterAll.bind(this);
     this.create = this.create.bind(this);
     this.update = this.update.bind(this);
+    this.updateResult = this.updateResult.bind(this);
   }
 
   async findAll(
@@ -46,5 +47,19 @@ export default class MatchesController {
     const { id } = req.params;
     const { code, data } = await this.service.update(+id);
     return res.status(code).json({ message: data });
+  }
+
+  async updateResult(
+    req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+
+    const { code, data } = await this.service
+      .updateResult(+id, homeTeamGoals, awayTeamGoals);
+
+    return res.status(code).json(data);
   }
 }

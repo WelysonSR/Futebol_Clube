@@ -31,6 +31,7 @@ class App {
     // this.app.get('/matches?inProgress=true', controlesMatches.fiuterAll);
     this.app.post('/matches', controlesMatches.create);
     this.app.patch('/matches/:id/finish', controlesMatches.update);
+    this.app.patch('/matches/:id', controlesMatches.updateResult);
 
     this.app.use(middlewareError);
   }

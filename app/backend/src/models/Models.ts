@@ -38,4 +38,12 @@ export default class MatchesModel {
     );
     return result;
   }
+
+  async updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+    const result = await this._model.update(
+      { homeTeamGoals, awayTeamGoals },
+      { where: { id } },
+    );
+    return result;
+  }
 }
