@@ -123,4 +123,23 @@ describe('Teste a rota Login Team', () => {
       expect(result.body).to.be.an('object');
     });  
   });
+
+  describe('Rota Get /team error', () => {
+    before(async () => {
+      sinon
+        .stub(TeamModel.prototype, "findOne")
+        .resolves(null);
+    });
+
+    after(() => {
+      (TeamModel.prototype.findOne as sinon.SinonStub).restore();
+    });
+
+    it('Times com erro', async () => {
+      const result = await chai.request(app).get('/teams/1')
+      console.log(result.status, result.body)
+      expect(result.status).to.be.equal(404);
+      expect(result.body.message).to.be.equal('No teams found by id')
+    });  
+  });
 });
