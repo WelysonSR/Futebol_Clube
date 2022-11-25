@@ -29,7 +29,7 @@ export default class MatchesService {
     const home = await this.teamModel.findOne(homeTeam);
     const away = await this.teamModel.findOne(awayTeam);
     if (homeTeam === awayTeam) {
-      return { code: 401, message: 'It is not possible to create a match with two equal teams' };
+      return { code: 422, message: 'It is not possible to create a match with two equal teams' };
     } if (!home || !away) {
       return { code: 404, message: 'There is no team with such id!' };
     }

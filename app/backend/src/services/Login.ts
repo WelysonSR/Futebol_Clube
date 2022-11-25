@@ -7,7 +7,7 @@ import { IUser } from '../interfaces/IUser';
 export default class ServiceLogin {
   constructor(private model: UserModel = new UserModel()) {}
 
-  public async login(user: ILogin) {
+  async login(user: ILogin) {
     const loginUser = await this.model.findOne(user.email);
 
     if (!loginUser || loginUser === null) {
