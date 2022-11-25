@@ -16,11 +16,15 @@ export default class MatchesController {
   ) {
     const { inProgress } = req.query;
     if (inProgress) {
-      const { code, data } = await this.service.fiuterAll(Boolean(inProgress));
-      return res.status(code).json(data);
+      const progress = await this.service.fiuterAll(inProgress === 'true');
+      if (progress.message) {
+        return res.status(progress.code).json(progress.message);
+      } return res.status(progress.code).json(progress.data);
     }
-    const { code, data } = await this.service.findAll();
-    return res.status(code).json(data);
+    const matches = await this.service.findAll();
+    if (matches.message) {
+      return res.status(matches.code).json(matches.message);
+    } return res.status(matches.code).json(matches.data);
   }
 
   async create(
