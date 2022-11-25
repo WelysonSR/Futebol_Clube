@@ -5,6 +5,7 @@ import ControllerLogin from './controllers/Login';
 import { tokenValidation } from './middlewares/jwt';
 import ControllerTeam from './controllers/Team';
 import ControllerMatches from './controllers/Matches';
+import LeaderController from './controllers/LeaderBoard';
 
 class App {
   public app: express.Express;
@@ -13,6 +14,7 @@ class App {
     private controlesLogin: ControllerLogin = new ControllerLogin(),
     private controlesTeam: ControllerTeam = new ControllerTeam(),
     private controlesMatches: ControllerMatches = new ControllerMatches(),
+    private controlesLeader: LeaderController = new LeaderController(),
   ) {
     this.app = express();
 
@@ -31,6 +33,8 @@ class App {
     this.app.post('/matches', tokenValidation, controlesMatches.create);
     this.app.patch('/matches/:id/finish', controlesMatches.update);
     this.app.patch('/matches/:id', controlesMatches.updateResult);
+
+    this.app.get('/leaderboard/home', controlesLeader.getAllHome);
 
     this.app.use(middlewareError);
   }
