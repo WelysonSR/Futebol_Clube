@@ -28,7 +28,6 @@ class App {
     this.app.get('/teams/:id', controlesTeam.findOne);
 
     this.app.get('/matches', controlesMatches.findAll);
-    // this.app.get('/matches?inProgress=true', controlesMatches.fiuterAll);
     this.app.post('/matches', controlesMatches.create);
     this.app.patch('/matches/:id/finish', controlesMatches.update);
     this.app.patch('/matches/:id', controlesMatches.updateResult);
