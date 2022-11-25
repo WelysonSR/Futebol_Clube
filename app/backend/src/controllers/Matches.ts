@@ -60,8 +60,6 @@ export default class MatchesController {
 
     const match = await this.service
       .updateResult(+id, homeTeamGoals, awayTeamGoals);
-    if (match.message) {
-      return res.status(match.code).json(match.message);
-    } return res.status(match.code).json(match.data);
+    return res.status(match.code).json(match.data);
   }
 }
