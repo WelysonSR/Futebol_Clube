@@ -11,6 +11,7 @@ export default function middlewareError(
   res: Response,
   _next: NextFunction,
 ) {
+  // const [code, message] = err.message.split('|');
   const { code, message } = err;
 
   res.status(code || 500).json({ message });

@@ -32,11 +32,10 @@ export default class MatchesController {
     res: Response,
     _next: NextFunction,
   ) {
-    const { code, data } = await this.service.create(req.body);
-    if (code !== 201) {
-      return res.status(code).json({ message: data });
-    }
-    return res.status(code).json(data);
+    const match = await this.service.create(req.body);
+    if (match.message) {
+      return res.status(match.code).json({ message: match.message });
+    } return res.status(match.code).json(match.data);
   }
 
   async update(
@@ -45,8 +44,10 @@ export default class MatchesController {
     _next: NextFunction,
   ) {
     const { id } = req.params;
-    const { code, data } = await this.service.update(+id);
-    return res.status(code).json({ message: data });
+    const match = await this.service.update(+id);
+    if (match.message) {
+      return res.status(match.code).json(match.message);
+    } return res.status(match.code).json(match.data);
   }
 
   async updateResult(
@@ -57,9 +58,10 @@ export default class MatchesController {
     const { id } = req.params;
     const { homeTeamGoals, awayTeamGoals } = req.body;
 
-    const { code, data } = await this.service
+    const match = await this.service
       .updateResult(+id, homeTeamGoals, awayTeamGoals);
-
-    return res.status(code).json(data);
+    if (match.message) {
+      return res.status(match.code).json(match.message);
+    } return res.status(match.code).json(match.data);
   }
 }
