@@ -8,12 +8,36 @@ import UserModel from '../models/User';
 
 import { Response } from 'superagent';
 import TeamModel from '../models/Team';
+import MatchesModel from '../models/Models';
 
 chai.use(chaiHttp);
 
 const { app } = new App();
 
 const { expect } = chai;
+
+const matchesMock = [
+  {
+    id: 1,
+    homeTeam: 16,
+    homeTeamGoals: 1,
+    awayTeam: 8,
+    awayTeamGoals: 1,
+    inProgress: false,
+    teamHome: { id: 16, teamName: "São Paulo" },
+    teamAway: { id: 8, teamName: "Grêmio" },
+  },
+  {
+    id: 2,
+    homeTeam: 9,
+    homeTeamGoals: 1,
+    awayTeam: 14,
+    awayTeamGoals: 1,
+    inProgress: false,
+    teamHome: { id: 9, teamName: "Internacional" },
+    teamAway: { id: 14, teamName: "Santos" },
+  },
+];
 
 describe('Teste a rota Login', () => {
   let chaiHttpResponse: Response;
@@ -83,24 +107,6 @@ describe('Teste a rota Login Team', () => {
       expect(result.body).to.be.an('array');
     });  
   });
-  describe('Rota Get /team error', () => {
-    before(async () => {
-      sinon
-        .stub(TeamModel.prototype, "findAll")
-        .resolves(null);
-    });
-
-    after(() => {
-      (TeamModel.prototype.findAll as sinon.SinonStub).restore();
-    });
-
-    it('Times com erro', async () => {
-      const result = await chai.request(app).get('/teams')
-      console.log(result.status, result.body)
-      expect(result.status).to.be.equal(404);
-      expect(result.body.message).to.be.equal('No teams found')
-    });  
-  });
 
   describe('Rota /team/id', () => {
     const tiam = {
@@ -123,23 +129,41 @@ describe('Teste a rota Login Team', () => {
       expect(result.body).to.be.an('object');
     });  
   });
+});
 
-  describe('Rota Get /team error', () => {
-    before(async () => {
-      sinon
-        .stub(TeamModel.prototype, "findOne")
-        .resolves(null);
-    });
+describe('Teste a rota GET/macthes ', () => {
+  beforeEach( async () => {
+    sinon
+      .stub(MatchesModel.prototype, 'findAll')
+      .resolves(matchesMock);
+  });
 
-    after(() => {
-      (TeamModel.prototype.findOne as sinon.SinonStub).restore();
-    });
+  afterEach(() => {
+    (MatchesModel.prototype.findAll as sinon.SinonStub).restore();
+  });
 
-    it('Times com erro', async () => {
-      const result = await chai.request(app).get('/teams/1')
-      console.log(result.status, result.body)
-      expect(result.status).to.be.equal(404);
-      expect(result.body.message).to.be.equal('No teams found by id')
-    });  
+  it('Teste a rota GET/matches em caso de sucesso', async () => {
+    const result = await chai.request(app).get('/matches');
+    expect(result.status).to.equal(200);
+    expect(result.body).to.be.a('array');
+    expect(result.body).to.deep.equal(matchesMock);
+  });
+});
+
+describe('Teste a rota PATCH/macthes ', () => {
+  beforeEach( async () => {
+    sinon
+      .stub(MatchesModel.prototype, 'update')
+      .resolves();
+  });
+
+  afterEach(() => {
+    (MatchesModel.prototype.update as sinon.SinonStub).restore();
+  });
+
+  it('Teste a rota PATCH/matches em caso de sucesso', async () => {
+    const result = await chai.request(app).patch('/matches/1');
+    expect(result.status).to.equal(200);
+    expect(result.body).to.have.property('message');
   });
 });
