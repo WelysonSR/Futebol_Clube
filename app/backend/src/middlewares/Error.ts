@@ -14,5 +14,11 @@ export default function middlewareError(
   // const [code, message] = err.message.split('|');
   const { code, message } = err;
 
+  // if (err instanceof CustonError) {
+  //   const customError = (<CustonError>err);
+  //   return res.status(customError.code).json({ message: customError.message });
+  // }
+  // return res.status(500).json({ message: 'Unknown error' });
+
   res.status(code || 500).json({ message });
 }

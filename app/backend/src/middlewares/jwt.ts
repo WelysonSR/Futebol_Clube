@@ -37,8 +37,8 @@ export const tokenValidation = (
         return res.status(401).json({ message: 'Token must be a valid token' });
       }
     });
-    next();
+    return next();
   } catch (err) {
-    next(err);
+    return res.status(500).json({ message: 'Unknown error' });
   }
 };

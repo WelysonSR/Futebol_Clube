@@ -26,12 +26,12 @@ export default class MatchesModel {
     return result;
   }
 
-  async create(matches: IMatches): Promise<IMatches> {
+  async create({ homeTeam, homeTeamGoals, awayTeam, awayTeamGoals }: IMatches): Promise<IMatches> {
     const result = await this._model.create({
-      homeTeam: matches.homeTeam,
-      homeTeamGoals: matches.homeTeamGoals,
-      awayTeam: matches.awayTeam,
-      awayTeamGoals: matches.awayTeamGoals,
+      homeTeam,
+      homeTeamGoals,
+      awayTeam,
+      awayTeamGoals,
       inProgress: true,
     });
     return result;
