@@ -1,9 +1,5 @@
-import {
-  sortLeaderBoardHome,
-  calculateLeaderboard,
-  calculateLeaderAway,
-  sortLeaderboardAway,
-} from '../assets/Leader';
+import { boardAway, sortLeaderboardAway } from '../assets/LeaderAway';
+import { sortLeaderBoardHome, calculateLeaderboard } from '../assets/Leader';
 import { ILeaderBoardAway, ILeaderBoardHomeAway } from '../interfaces/ILeaderBoard';
 import LeaderModel from '../models/LeaderBoard';
 
@@ -21,7 +17,7 @@ export default class LeaderService {
 
   async getAllAway() {
     const leaderAway = await this.leaderModel.getAllAway() as unknown as ILeaderBoardAway[];
-    const result = calculateLeaderAway(leaderAway);
+    const result = boardAway(leaderAway);
     const sortLeader = sortLeaderboardAway(result);
     return { code: 200, data: sortLeader };
   }
