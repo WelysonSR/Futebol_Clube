@@ -1,5 +1,10 @@
-import { sortLeaderBoardHome, calculateLeaderboard } from '../assets/Leader';
-import { ILeaderBoardHomeAway } from '../interfaces/ILeaderBoard';
+import {
+  sortLeaderBoardHome,
+  calculateLeaderboard,
+  calculateLeaderAway,
+  sortLeaderboardAway,
+} from '../assets/Leader';
+import { ILeaderBoardAway, ILeaderBoardHomeAway } from '../interfaces/ILeaderBoard';
 import LeaderModel from '../models/LeaderBoard';
 
 export default class LeaderService {
@@ -11,6 +16,13 @@ export default class LeaderService {
     const leader = await this.leaderModel.getAllHome() as unknown as ILeaderBoardHomeAway[];
     const result = calculateLeaderboard(leader);
     const sortLeader = sortLeaderBoardHome(result);
+    return { code: 200, data: sortLeader };
+  }
+
+  async getAllAway() {
+    const leaderAway = await this.leaderModel.getAllAway() as unknown as ILeaderBoardAway[];
+    const result = calculateLeaderAway(leaderAway);
+    const sortLeader = sortLeaderboardAway(result);
     return { code: 200, data: sortLeader };
   }
 }

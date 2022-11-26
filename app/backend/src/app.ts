@@ -1,21 +1,14 @@
 import * as express from 'express';
 import middlewareError from './middlewares/Error';
-import validationLogin from './middlewares/validationLogin';
-import ControllerLogin from './controllers/Login';
-import { tokenValidation } from './middlewares/jwt';
-import ControllerTeam from './controllers/Team';
-import ControllerMatches from './controllers/Matches';
-import LeaderController from './controllers/LeaderBoard';
+import user from './router/login';
+import teams from './router/teams';
+import matches from './router/matches';
+import leaderboard from './router/leaderboard';
 
 class App {
   public app: express.Express;
 
-  constructor(
-    private controlesLogin: ControllerLogin = new ControllerLogin(),
-    private controlesTeam: ControllerTeam = new ControllerTeam(),
-    private controlesMatches: ControllerMatches = new ControllerMatches(),
-    private controlesLeader: LeaderController = new LeaderController(),
-  ) {
+  constructor() {
     this.app = express();
 
     this.config();
@@ -23,18 +16,13 @@ class App {
     // Não remover essa rota
     this.app.get('/', (_req, res) => res.json({ ok: true }));
 
-    this.app.post('/login', validationLogin, controlesLogin.login);
-    this.app.get('/login/validate', tokenValidation, controlesLogin.validateToken);
+    this.app.use('/login', user);
 
-    this.app.get('/teams', controlesTeam.findAll);
-    this.app.get('/teams/:id', controlesTeam.findOne);
+    this.app.use('/teams', teams);
 
-    this.app.get('/matches', controlesMatches.findAll);
-    this.app.post('/matches', tokenValidation, controlesMatches.create);
-    this.app.patch('/matches/:id/finish', controlesMatches.update);
-    this.app.patch('/matches/:id', controlesMatches.updateResult);
+    this.app.use('/matches', matches);
 
-    this.app.get('/leaderboard/home', controlesLeader.getAllHome);
+    this.app.use('/leaderboard', leaderboard);
 
     this.app.use(middlewareError);
   }

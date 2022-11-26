@@ -11,4 +11,12 @@ export default class LeaderBoardModel {
     });
     return result;
   }
+
+  async getAllAway() {
+    const result = await this._model.findAll({
+      attributes: { exclude: ['id'] },
+      include: [{ model: Matches, as: 'teamAway', where: { inProgress: 0 } }],
+    });
+    return result;
+  }
 }

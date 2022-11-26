@@ -1,4 +1,9 @@
-import { ILeaderBoardHome, ILeaderBoardHomeAway, ILeaderBoard } from '../interfaces/ILeaderBoard';
+import {
+  ILeaderBoardHome,
+  ILeaderBoardHomeAway,
+  ILeaderBoard,
+  ILeaderBoardAway,
+} from '../interfaces/ILeaderBoard';
 
 const leader = (match: ILeaderBoardHome[]) => {
   const goalsFavor = match.reduce((acc: number, mat: ILeaderBoardHome) =>
@@ -39,6 +44,30 @@ const calculateLeaderboard = (home: ILeaderBoardHomeAway[]) => {
     const goalsBalance = leader(t.teamHome);
     const efficiency = totalEfficiency(totalPoints, totalGames);
 
+    return {
+      name,
+      totalPoints,
+      totalGames,
+      totalVictories,
+      totalDraws,
+      totalLosses,
+      ...goalsBalance,
+      efficiency: efficiency.toFixed(2),
+    };
+  });
+
+  return newHome;
+};
+
+const calculateLeaderAway = (home: ILeaderBoardAway[]) => {
+  const newHome = home.map((t) => {
+    const name = t.teamName;
+    const { totalVictories, totalLosses, totalDraws, totalPoints } = calculateMatch(t.teamAway);
+
+    const totalGames = t.teamAway.length;
+    const goalsBalance = leader(t.teamAway);
+    const efficiency = totalEfficiency(totalPoints, totalGames);
+
     return { name,
       totalPoints,
       totalGames,
@@ -69,4 +98,22 @@ const sortLeaderBoardHome = (leaderboard: ILeaderBoard[]) => {
   });
   return sortedLeaderboard;
 };
-export { calculateLeaderboard, sortLeaderBoardHome };
+
+const sortLeaderboardAway = (leaderAway: ILeaderBoard[]) => {
+  const sortedLeaderAway = leaderAway.sort((b: ILeaderBoard, a: ILeaderBoard) => {
+    if (a.totalPoints > b.totalPoints) return -1;
+    if (a.totalPoints < b.totalPoints) return 1;
+    if (a.totalVictories > b.totalVictories) return -1;
+    if (a.totalVictories < b.totalVictories) return 1;
+    if (a.goalsBalance > b.goalsBalance) return -1;
+    if (a.goalsBalance < b.goalsBalance) return 1;
+    if (a.goalsFavor > b.goalsFavor) return -1;
+    if (a.goalsFavor < b.goalsFavor) return 1;
+    if (a.goalsOwn > b.goalsOwn) return -1;
+    if (a.goalsOwn < b.goalsOwn) return 1;
+    return 0;
+  });
+  return sortedLeaderAway;
+};
+
+export { calculateLeaderboard, sortLeaderBoardHome, calculateLeaderAway, sortLeaderboardAway };
