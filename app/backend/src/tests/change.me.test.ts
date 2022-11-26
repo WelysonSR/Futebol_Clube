@@ -3,6 +3,7 @@ import * as chai from 'chai';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
+import * as jwt from 'jsonwebtoken';
 import App from '../app';
 import UserModel from '../models/User';
 
@@ -38,6 +39,14 @@ const matchesMock = [
     teamAway: { id: 14, teamName: "Santos" },
   },
 ];
+
+const userMock = {
+  id: 1,
+  username: 'Admin',
+  role: 'admin',
+  email: 'admin@admin.com',
+  password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
+}
 
 describe('Teste a rota Login', () => {
   let chaiHttpResponse: Response;
@@ -165,5 +174,40 @@ describe('Teste a rota PATCH/macthes ', () => {
     const result = await chai.request(app).patch('/matches/1');
     expect(result.status).to.equal(200);
     expect(result.body).to.have.property('message');
+  });
+});
+
+describe('Teste a rota GET /validate', () => {
+  beforeEach(async () => {
+    sinon
+      .stub(jwt, 'verify')
+      .callsFake(() => {
+        return Promise.resolve({ sucess: 'Token is valid' });
+      });
+    sinon.stub(UserModel.prototype, 'findOne')
+    .resolves(userMock);
+  });
+
+  afterEach(() => {
+    (UserModel.prototype.findOne as sinon.SinonStub).restore();
+    (jwt.verify as sinon.SinonStub).restore();
+  });
+
+  it('Teste a validação em caso de sucesso', async () => {
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+    const result = await chai.request(app).get('/login/validate').set('authorization', token);
+
+    expect(result.status).to.equal(200);
+    expect(result.body).to.have.property('role');
+    expect(result.body.role).to.be.equal('admin');
+  });
+
+  it('Teste a a validação em caso de usuário ser o Administrador', async () => {
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+    const result = await chai.request(app).get('/login/validate').set('authorization', token);
+
+    expect(result.status).to.equal(200);
+    expect(result.body).to.have.property('role');
+    expect(result.body.role).to.be.equal('admin');
   });
 });
