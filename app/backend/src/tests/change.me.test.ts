@@ -10,6 +10,7 @@ import UserModel from '../models/User';
 import { Response } from 'superagent';
 import TeamModel from '../models/Team';
 import MatchesModel from '../models/Models';
+import LeaderBoardModel from '../models/LeaderBoard';
 
 chai.use(chaiHttp);
 
@@ -72,7 +73,7 @@ describe('Teste a rota Login', () => {
       email: 'admin@admin.com',
       password: 'secret_admin'
     });
-    expect(result.status).to.be.equal(200);  
+    expect(result.status).to.be.equal(200);
     expect(result.body).to.have.property('token');
   });
 
@@ -88,7 +89,6 @@ describe('Teste a rota Login', () => {
   });
 });
 
-
 describe('Teste a rota Login Team', () => {
   describe('Rota Get /team', () => {
     before(async () => {
@@ -96,11 +96,11 @@ describe('Teste a rota Login Team', () => {
         .stub(TeamModel.prototype, "findAll")
         .resolves([
           {
-            id:1,
+            id: 1,
             teamName: 'Vitoria',
           },
           {
-            id:2,
+            id: 2,
             teamName: 'Bahia',
           }],
         );
@@ -112,14 +112,14 @@ describe('Teste a rota Login Team', () => {
 
     it('Retorna os times com sucesso', async () => {
       const result = await chai.request(app).get('/teams')
-      expect(result.status).to.be.equal(200);  
+      expect(result.status).to.be.equal(200);
       expect(result.body).to.be.an('array');
-    });  
+    });
   });
 
   describe('Rota /team/id', () => {
     const tiam = {
-      id:1,
+      id: 1,
       teamName: 'Vitoria',
     }
     before(async () => {
@@ -134,14 +134,14 @@ describe('Teste a rota Login Team', () => {
 
     it('Retorna um tiam pelo id', async () => {
       const result = await chai.request(app).get('/teams/1')
-      expect(result.status).to.be.equal(200);  
+      expect(result.status).to.be.equal(200);
       expect(result.body).to.be.an('object');
-    });  
+    });
   });
 });
 
 describe('Teste a rota GET/macthes ', () => {
-  beforeEach( async () => {
+  beforeEach(async () => {
     sinon
       .stub(MatchesModel.prototype, 'findAll')
       .resolves(matchesMock);
@@ -160,7 +160,7 @@ describe('Teste a rota GET/macthes ', () => {
 });
 
 describe('Teste a rota PATCH/macthes ', () => {
-  beforeEach( async () => {
+  beforeEach(async () => {
     sinon
       .stub(MatchesModel.prototype, 'update')
       .resolves();
@@ -185,7 +185,7 @@ describe('Teste a rota GET /validate', () => {
         return Promise.resolve({ sucess: 'Token is valid' });
       });
     sinon.stub(UserModel.prototype, 'findOne')
-    .resolves(userMock);
+      .resolves(userMock);
   });
 
   afterEach(() => {
@@ -209,5 +209,113 @@ describe('Teste a rota GET /validate', () => {
     expect(result.status).to.equal(200);
     expect(result.body).to.have.property('role');
     expect(result.body.role).to.be.equal('admin');
+  });
+});
+
+const mockLeaderboardHome = [
+  {
+    name: 'Santos',
+    totalPoints: 9,
+    totalGames: 3,
+    totalVictories: 3,
+    totalDraws: 0,
+    totalLosses: 0,
+    goalsFavor: 9,
+    goalsOwn: 3,
+    goalsBalance: 6,
+    efficiency: '100.00'
+  },
+  {
+    name: 'Palmeiras',
+    totalPoints: 7,
+    totalGames: 3,
+    totalVictories: 2,
+    totalDraws: 1,
+    totalLosses: 0,
+    goalsFavor: 10,
+    goalsOwn: 5,
+    goalsBalance: 5,
+    efficiency: '77.78'
+  },
+  {
+    name: 'Corinthians',
+    totalPoints: 6,
+    totalGames: 2,
+    totalVictories: 2,
+    totalDraws: 0,
+    totalLosses: 0,
+    goalsFavor: 6,
+    goalsOwn: 1,
+    goalsBalance: 5,
+    efficiency: '100.00'
+  },
+]
+
+const mockLeaderboardAway = [
+  {
+    "name": "Palmeiras",
+    "totalPoints": 6,
+    "totalGames": 2,
+    "totalVictories": 2,
+    "totalDraws": 0,
+    "totalLosses": 0,
+    "goalsFavor": 7,
+    "goalsOwn": 0,
+    "goalsBalance": 7,
+    "efficiency": "100.00"
+  },
+  {
+    "name": "Corinthians",
+    "totalPoints": 6,
+    "totalGames": 3,
+    "totalVictories": 2,
+    "totalDraws": 0,
+    "totalLosses": 1,
+    "goalsFavor": 6,
+    "goalsOwn": 2,
+    "goalsBalance": 4,
+    "efficiency": "66.67"
+  },
+]
+
+describe('Teste a rota GET /leaderboard', () => {
+  describe('Teste a rota GET /leaderboard/home', () => {
+    beforeEach(async () => {
+      return sinon
+        .stub(LeaderBoardModel.prototype, 'getAllHome')
+        .resolves();
+    });
+
+    afterEach(() => {
+      (LeaderBoardModel.prototype.getAllHome as sinon.SinonStub)
+        .restore();
+    });
+
+    it('Teste a rota GET/leaderboard/home em caso de sucesso', async () => {
+      const result = await chai.request(app).patch('/leaderboard/home').send(mockLeaderboardHome);
+      expect(result.status).to.equal(200);
+      expect(result.body).to.be.a('array');
+      expect(result.body).to.deep.equal(mockLeaderboardHome);
+    });
+  });
+
+  describe('Teste a rota GET /leaderboard/away', () => {
+    beforeEach(async () => {
+      return sinon
+        .stub(LeaderBoardModel.prototype, 'getAllAway')
+        .resolves();
+    });
+
+    afterEach(() => {
+      (LeaderBoardModel.prototype.getAllAway as sinon.SinonStub)
+        .restore();
+    });
+
+    it('Teste a rota GET/leaderboard/away em caso de sucesso', async () => {
+      const result = await chai.request(app).patch('/leaderboard/away').send(mockLeaderboardAway);
+      expect(result.status).to.equal(200);
+      expect(result.body).to.be.a('array');
+      expect(result.body).to.deep.equal(mockLeaderboardAway);
+    });
   });
 });
