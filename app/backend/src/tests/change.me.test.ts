@@ -278,6 +278,28 @@ const mockLeaderboardAway = [
   },
 ]
 
+describe('teste leaderboard', () => {
+  let chaiHttpResponse: Response;
+  afterEach(sinon.restore);
+
+  it('leaderboard get', async () => {
+    chaiHttpResponse = await chai.request(app)
+      .get('/leaderboard')
+    expect(chaiHttpResponse.status).to.be.eq(200)
+  })
+
+  it('leaderboard get home', async () => {
+    chaiHttpResponse = await chai.request(app)
+      .get('/leaderboard/home')
+    expect(chaiHttpResponse.status).to.be.eq(200)
+  })
+  it('leaderboard get away', async () => {
+    chaiHttpResponse = await chai.request(app)
+      .get('/leaderboard/away')
+    expect(chaiHttpResponse.status).to.be.eq(200)
+  })
+})
+
 describe('Teste a rota GET /leaderboard', () => {
   describe('Teste a rota GET /leaderboard/home', () => {
     beforeEach(async () => {
@@ -319,3 +341,4 @@ describe('Teste a rota GET /leaderboard', () => {
     });
   });
 });
+
