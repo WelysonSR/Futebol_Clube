@@ -13,23 +13,18 @@ export default class ControllerLogin {
     this.validateToken = this.validateToken.bind(this);
   }
 
-  async login(
-    req: Request,
-    res: Response,
-    _next: NextFunction,
-  ) {
-    const user = req.body as ILogin;
-    const result = await this.service.login(user);
-    if (result.code === 200) {
+  async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.body as ILogin;
+      const result = await this.service.login(user);
+
       return res.status(result.code).json({ token: result.token });
-    } return res.status(result.code).json({ message: result.message });
+    } catch (err) {
+      next(err);
+    }
   }
 
-  async validateToken(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async validateToken(req: Request, res: Response, next: NextFunction) {
     try {
       const { authorization } = req.headers as IToken;
 

@@ -11,17 +11,13 @@ export default class MatchesService {
 
   async findAll() {
     const matches = await this.model.findAll();
-    if (!matches) {
-      return { code: 404, message: 'No matches found' };
-    }
+    if (!matches) throw new CustonError(404, 'No matches found');
     return { code: 200, data: matches };
   }
 
   async fiuterAll(inProgress: boolean) {
     const matches = await this.model.fiuterAll(inProgress);
-    if (!matches) {
-      return { code: 404, message: 'No matches found' };
-    }
+    if (!matches) throw new CustonError(404, 'No matches found');
     return { code: 200, data: matches };
   }
 
@@ -42,7 +38,7 @@ export default class MatchesService {
   async update(id: number) {
     const match = await this.model.update(id);
     if (!match) {
-      return { code: 404, message: 'Unable to change a match inProgress status' };
+      throw new CustonError(404, 'Unable to change a match inProgress status');
     }
     return { code: 200, data: 'Finished' };
   }

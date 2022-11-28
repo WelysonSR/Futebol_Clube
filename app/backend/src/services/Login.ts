@@ -3,6 +3,7 @@ import { ILogin } from '../interfaces/ILogin';
 import { generateTokenJwt } from '../middlewares/jwt';
 import Bcrypt from '../assets/Bcrypt';
 import { IUser } from '../interfaces/IUser';
+import CustonError from '../erros/CustonErros';
 
 export default class ServiceLogin {
   constructor(private model: UserModel = new UserModel()) {}
@@ -11,11 +12,10 @@ export default class ServiceLogin {
     const loginUser = await this.model.findOne(user.email);
 
     if (!loginUser || loginUser === null) {
-      return { code: 401, message: 'Incorrect email or password' };
+      throw new CustonError(401, 'Incorrect email or password');
     }
-
     if (!Bcrypt.compare(loginUser.password, user.password)) {
-      return { code: 401, message: 'Incorrect email or password' };
+      throw new CustonError(401, 'Incorrect email or password');
     }
 
     const token = generateTokenJwt(user.email);
