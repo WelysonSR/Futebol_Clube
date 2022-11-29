@@ -39,7 +39,7 @@ export default class MatchesModel {
 
   async update(id: number) {
     const result = await this._model.update(
-      { inProgress: false },
+      { inProgress: 0 },
       { where: { id } },
     );
     return result;

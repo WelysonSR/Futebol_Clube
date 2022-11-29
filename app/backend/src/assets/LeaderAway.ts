@@ -20,10 +20,12 @@ const calculateMatch = (matches: ILeaderBoardHome[]) => {
   matches.forEach((match: ILeaderBoardHome) => {
     if (match.awayTeamGoals > match.homeTeamGoals) {
       totalVictories += 1; totalPoints += 3;
-    } else if (match.homeTeamGoals > match.awayTeamGoals) {
-      totalLosses += 1;
-    } else {
+    }
+    if (match.homeTeamGoals === match.awayTeamGoals) {
       totalDraws += 1; totalPoints += 1;
+    }
+    if (match.homeTeamGoals > match.awayTeamGoals) {
+      totalLosses += 1;
     }
   });
   return { totalVictories, totalLosses, totalDraws, totalPoints };
@@ -42,8 +44,8 @@ const boardAway = (home: ILeaderBoardAway[]) => {
     const totalGames = t.teamAway.length;
     const goalsBalance = leader(t.teamAway);
     const efficiency = totalEfficiency(totalPoints, totalGames);
-
-    return { name,
+    return {
+      name,
       totalPoints,
       totalGames,
       totalVictories,
@@ -53,7 +55,6 @@ const boardAway = (home: ILeaderBoardAway[]) => {
       efficiency: efficiency.toFixed(2),
     };
   });
-
   return newHome;
 };
 
