@@ -30,7 +30,7 @@ export const tokenValidation = (
   try {
     const { authorization } = req.headers;
     if (!authorization || authorization.length === 0) {
-      return next({ code: 401, message: 'Token not found' });
+      return res.status(401).json({ message: 'Token not found' });
     }
     jwt.verify(authorization as string, JWT_SECRET, (err) => {
       if (err) {

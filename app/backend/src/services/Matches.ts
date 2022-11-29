@@ -25,11 +25,11 @@ export default class MatchesService {
     const { homeTeam, awayTeam } = matches;
     const home = await this.teamModel.findOne(homeTeam);
     const away = await this.teamModel.findOne(awayTeam);
-    if (homeTeam === awayTeam) {
-      throw new CustonError(422, 'It is not possible to create a match with two equal teams');
-    }
     if (!home || !away) {
       throw new CustonError(404, 'There is no team with such id!');
+    }
+    if (homeTeam === awayTeam) {
+      throw new CustonError(422, 'It is not possible to create a match with two equal teams');
     }
     const match = await this.model.create(matches);
     return { code: 201, data: match };
